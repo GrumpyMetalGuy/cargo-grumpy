@@ -1,9 +1,0 @@
-[package]
-name = "cargo-grumpy"
-version = "0.1.0"
-authors = ["GrumpyMetalGuy"]
-edition = "2018"
-
-[dependencies]
-argh = "0.1"
-subprocess = "0.2"

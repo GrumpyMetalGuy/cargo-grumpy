@@ -127,7 +127,7 @@ fn create_binary_script(project_name: &String, script_name: &String, overwrite: 
     let project_root = get_project_path_buf(project_name);
     let source_root = project_root.join("src");
 
-    let filename: PathBuf;
+    let mut filename: PathBuf;
 
     // We have one of two cases here. We're either in a lib project, in which case executable
     // scripts live under a bin subdirectory. Otherwise, we add directly to the current
@@ -159,6 +159,8 @@ fn create_binary_script(project_name: &String, script_name: &String, overwrite: 
 
         filename = binary_source_file;
     }
+
+    filename.set_extension("rs");
 
     if filename.exists() {
         println!("Not creating {:?}, already exists", filename);

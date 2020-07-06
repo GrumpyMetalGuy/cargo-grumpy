@@ -50,12 +50,12 @@ struct NewSubCommand {
 #[argh(subcommand, name = "add")]
 struct AddSubCommand {
     /// name of project
-    #[argh(positional)]
-    project_name: String,
+    #[argh(option, short = 'p')]
+    project_name: Option<String>,
 
-    #[argh(option, short = 's')]
+    #[argh(positional)]
     /// what to call the executable script, defaults to main
-    script_name: Option<String>,
+    script_name: String,
 }
 
 fn get_project_path_buf(project_name: &String) -> PathBuf {
@@ -152,7 +152,10 @@ fn create_binary_script(project_name: &String, script_name: &String, overwrite: 
             if overwrite {
                 fs::remove_file(&binary_source_file).unwrap();
             } else {
-                println!("Not overwriting {:?} in existing project, exiting", binary_source_file);
+                println!(
+                    "Not overwriting {:?} in existing project, exiting",
+                    binary_source_file
+                );
                 return 101;
             }
         }
@@ -243,12 +246,24 @@ fn process_new(new_args: &NewSubCommand) -> i32 {
 }
 
 fn process_add(add_args: &AddSubCommand) -> i32 {
+    if env::current_dir().unwrap().join("src").exists() {
+        // We're probably inside an existing project, so we want to create something here
+        // without specifying the project name.
+
+        if add_args.project_name.is_some() {
+            // Oops, project name was specified though, so this is probably an error.
+            println!("Specified a project name but appear to be inside a project already");
+            return 103;
+        }
+    } else if add_args.project_name.is_none() {
+        // Not in a directory with a src folder, so we need a project name, but weren't given one.
+        println!("No project name specified");
+        return 104;
+    }
+
     create_binary_script(
-        &add_args.project_name,
-        &add_args
-            .script_name
-            .as_ref()
-            .unwrap_or(&"main.rs".to_string()),
+        &add_args.project_name.as_ref().unwrap_or(&".".to_string()),
+        &add_args.script_name,
         false,
     )
 }

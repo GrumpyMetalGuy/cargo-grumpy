@@ -7,6 +7,7 @@ use std::path;
 use std::path::PathBuf;
 use std::process::exit;
 use subprocess::{Exec, ExitStatus};
+use chwd::ChangeWorkingDirectory;
 
 #[derive(FromArgs)]
 /// Harness the power of Grumpy to automate standard project creation and maintenance.
@@ -60,28 +61,6 @@ struct AddSubCommand {
 
 fn get_project_path_buf(project_name: &String) -> PathBuf {
     path::PathBuf::from(env::current_dir().unwrap()).join(project_name)
-}
-
-struct ChangeWorkingDirectory {
-    previous_directory: path::PathBuf,
-}
-
-impl ChangeWorkingDirectory {
-    fn change(new_directory: &impl AsRef<path::Path>) -> Self {
-        let current_working_directory = env::current_dir().unwrap();
-
-        env::set_current_dir(new_directory).unwrap();
-
-        ChangeWorkingDirectory {
-            previous_directory: current_working_directory,
-        }
-    }
-}
-
-impl Drop for ChangeWorkingDirectory {
-    fn drop(&mut self) {
-        env::set_current_dir(&self.previous_directory).unwrap();
-    }
 }
 
 struct CargoCommand {

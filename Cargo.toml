@@ -6,4 +6,5 @@ edition = "2018"
 
 [dependencies]
 argh = "0.1"
+chwd = "0.2"
 subprocess = "0.2"

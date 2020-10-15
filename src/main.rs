@@ -180,7 +180,7 @@ fn main() -> Result<(), Error> {
         CargoCommand::new("add").add_arg("anyhow@1.0").run();
         CargoCommand::new("add").add_arg("thiserror@1.0").run();
         CargoCommand::new("add").add_arg("log@0.4").run();
-        CargoCommand::new("add").add_arg("log4rs@0.8").run();
+        CargoCommand::new("add").add_arg("log4rs@0.13").run();
     }
 
     0
